@@ -1,0 +1,56 @@
+{
+  "name": "geir",
+  "version": "0.1.0",
+  "description": "GitHub, ENS, IPFS, Release — release tool for static-site ENS + IPFS projects.",
+  "license": "MIT",
+  "bin": {
+    "geir": "dist/cli/bin.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./config": {
+      "types": "./dist/config/schema.d.ts",
+      "import": "./dist/config/schema.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "blockstore-core": "6.1.3",
+    "ipfs-unixfs-importer": "16.1.5",
+    "jiti": "2.7.0",
+    "multiformats": "13.4.2",
+    "viem": "2.52.2"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.21",
+    "oxfmt": "0.55.0",
+    "oxlint": "1.70.0",
+    "tsc-alias": "1.8.17",
+    "typescript": "5.9.3",
+    "vitest": "4.1.9"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "overrides": {
+      "ws@>=8.0.0 <8.21.0": ">=8.21.0"
+    }
+  }
+}

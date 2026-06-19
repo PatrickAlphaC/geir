@@ -1,0 +1,16 @@
+{
+  "name": "geir-demo",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "geir:build": "geir build",
+    "geir:pin": "geir pin",
+    "geir:tx": "geir tx --ui",
+    "geir:tx:print": "geir tx"
+  },
+  "devDependencies": {
+    "geir": "workspace:*"
+  }
+}

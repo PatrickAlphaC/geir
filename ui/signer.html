@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>geir — Sign ENS Update</title>
+    <style>
+      :root {
+        --bg: #0d1a0d;
+        --text: #d4dcd4;
+        --heading: #eaf2ea;
+        --accent: #6abf7b;
+        --meta: #c4943a;
+        --divider: #2a3d2a;
+        --danger: #e05555;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      body {
+        font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        font-size: 14px;
+        line-height: 1.6;
+        background: var(--bg);
+        color: var(--text);
+        padding: 2rem;
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 1.5rem;
+        color: var(--heading);
+        margin-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+        color: var(--heading);
+        margin: 2rem 0 0.8rem;
+      }
+      .subtitle {
+        color: var(--meta);
+        margin-bottom: 2rem;
+        word-break: break-all;
+      }
+      .field {
+        margin-bottom: 0.6rem;
+      }
+      .field label {
+        color: var(--meta);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .field .value {
+        color: var(--text);
+        word-break: break-all;
+        font-size: 0.85rem;
+      }
+      button {
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.6rem 1.4rem;
+        border: 1px solid var(--accent);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--accent);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      button:hover:not(:disabled) {
+        background: var(--accent);
+        color: var(--bg);
+      }
+      button:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+      .execute-btn {
+        border-color: var(--meta);
+        color: var(--meta);
+        font-weight: 500;
+      }
+      .execute-btn:hover:not(:disabled) {
+        background: var(--meta);
+        color: var(--bg);
+      }
+      .sig-list,
+      .owner-list {
+        list-style: none;
+        padding: 0;
+      }
+      .sig-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--divider);
+        font-size: 0.8rem;
+      }
+      .sig-list .addr {
+        color: var(--accent);
+      }
+      .sig-list .time {
+        color: var(--meta);
+        font-size: 0.7rem;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+      }
+      .badge-ok {
+        background: #1a3a1a;
+        color: var(--accent);
+      }
+      .badge-wait {
+        background: #2a2a1a;
+        color: var(--meta);
+      }
+      #status {
+        margin-top: 1rem;
+        padding: 0.6rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        display: none;
+      }
+      #status.error {
+        display: block;
+        background: #2a1515;
+        color: var(--danger);
+      }
+      #status.success {
+        display: block;
+        background: #152a15;
+        color: var(--accent);
+      }
+      #status.info {
+        display: block;
+        background: #1a2a1a;
+        color: var(--text);
+      }
+      .actions {
+        display: flex;
+        gap: 0.8rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+      hr {
+        border: none;
+        height: 1px;
+        background: var(--divider);
+        margin: 2rem 0;
+      }
+      .wallet-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+      }
+      .wallet-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--divider);
+        border-radius: 4px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: 0.8rem;
+        transition: border-color 0.15s;
+      }
+      .wallet-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .wallet-btn img {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+      }
+      .wallet-btn.connected {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Sign ENS Update</h1>
+    <div class="subtitle" id="cid-display">Loading…</div>
+
+    <div id="tx-info"></div>
+
+    <hr />
+
+    <h2>Wallet</h2>
+    <div id="wallet-list" class="wallet-list"></div>
+    <div class="actions">
+      <button id="connect-btn" style="display: none">Connect Wallet</button>
+    </div>
+    <div id="wallet-info"></div>
+
+    <section id="safe-section" class="hidden">
+      <hr />
+      <h2>Signatures <span id="sig-count" class="badge badge-wait">0 / ?</span></h2>
+      <ul class="sig-list" id="sig-list"></ul>
+      <div class="actions">
+        <button id="sign-btn" disabled>Sign Transaction</button>
+        <button id="execute-btn" class="execute-btn" disabled>Execute On-Chain</button>
+      </div>
+    </section>
+
+    <section id="eoa-section" class="hidden">
+      <hr />
+      <div class="actions">
+        <button id="send-btn" disabled>Send Transaction</button>
+      </div>
+    </section>
+
+    <div id="status"></div>
+
+    <script type="module">
+      // No external/CDN imports: all encoding happens in geir's code. The
+      // browser only connects a wallet (EIP-6963), signs typed data the server
+      // provides, and submits calldata the server builds.
+      const SAFE_TX_TYPES = {
+        EIP712Domain: [
+          { name: "chainId", type: "uint256" },
+          { name: "verifyingContract", type: "address" },
+        ],
+        SafeTx: [
+          { name: "to", type: "address" },
+          { name: "value", type: "uint256" },
+          { name: "data", type: "bytes" },
+          { name: "operation", type: "uint8" },
+          { name: "safeTxGas", type: "uint256" },
+          { name: "baseGas", type: "uint256" },
+          { name: "gasPrice", type: "uint256" },
+          { name: "gasToken", type: "address" },
+          { name: "refundReceiver", type: "address" },
+          { name: "nonce", type: "uint256" },
+        ],
+      };
+
+      let txData = null;
+      let connectedAddress = null;
+      let selectedProvider = null;
+      let signatures = [];
+      const discoveredWallets = [];
+
+      const el = (id) => document.getElementById(id);
+      const connectBtn = el("connect-btn");
+      const signBtn = el("sign-btn");
+      const executeBtn = el("execute-btn");
+      const sendBtn = el("send-btn");
+      const statusEl = el("status");
+      const sigListEl = el("sig-list");
+      const sigCountEl = el("sig-count");
+      const walletInfo = el("wallet-info");
+      const walletListEl = el("wallet-list");
+
+      const setStatus = (msg, type) => {
+        statusEl.textContent = msg;
+        statusEl.className = type;
+      };
+      const short = (addr) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+      const isSafe = () => txData.mode === "safe";
+
+      function isAuthorized(addr) {
+        const a = addr.toLowerCase();
+        return isSafe() ? txData.owners.includes(a) : a === txData.account.toLowerCase();
+      }
+
+      async function loadTxData() {
+        txData = await (await fetch("/tx-data")).json();
+        el("title").textContent = `Sign ENS Update — ${txData.ensName}`;
+        el("cid-display").textContent = txData.cid;
+
+        const tx = txData.transaction;
+        const rows = [
+          ["ENS Name", txData.ensName],
+          [isSafe() ? "Safe" : "Owner (EOA)", txData.account],
+          ["Resolver (to)", tx.to],
+          ["Contenthash", txData.contenthash],
+        ];
+        if (isSafe()) {
+          rows.push(["Nonce", String(tx.nonce)]);
+          rows.push(["Threshold", `${txData.threshold} of ${txData.owners.length} owners`]);
+          rows.push(["safeTxHash", txData.safeTxHash]);
+        }
+        el("tx-info").innerHTML = rows
+          .map(
+            ([label, value]) =>
+              `<div class="field"><label>${label}</label><div class="value">${value}</div></div>`,
+          )
+          .join("");
+
+        if (isSafe()) {
+          el("safe-section").classList.remove("hidden");
+          await loadSignatures();
+        } else {
+          el("eoa-section").classList.remove("hidden");
+        }
+      }
+
+      async function loadSignatures() {
+        const record = await (await fetch("/signatures")).json();
+        signatures = record.signatures || [];
+        renderSignatures();
+      }
+
+      function renderSignatures() {
+        if (!isSafe()) return;
+        const threshold = txData.threshold;
+        sigCountEl.textContent = `${signatures.length} / ${threshold}`;
+        sigCountEl.className =
+          signatures.length >= threshold ? "badge badge-ok" : "badge badge-wait";
+
+        const signed = new Set(signatures.map((s) => s.signer.toLowerCase()));
+        const signedRows = signatures.map(
+          (s) =>
+            `<li><span class="addr">${short(s.signer)}</span> <span class="time">${new Date(s.timestamp).toLocaleString()}</span></li>`,
+        );
+        const pendingRows = txData.owners
+          .filter((o) => !signed.has(o))
+          .map((o) => {
+            const you = connectedAddress && o === connectedAddress.toLowerCase();
+            return `<li style="opacity:${you ? 1 : 0.6}">${short(o)} ${you ? "(you — not yet signed)" : "(pending)"}</li>`;
+          });
+        sigListEl.innerHTML = signedRows.concat(pendingRows).join("");
+        executeBtn.disabled = signatures.length < threshold;
+      }
+
+      function renderWalletList() {
+        let html = discoveredWallets
+          .map(
+            (w, i) =>
+              `<button class="wallet-btn" data-idx="${i}">${w.info.icon ? `<img src="${w.info.icon}" alt="">` : ""}${w.info.name}</button>`,
+          )
+          .join("");
+        if (!html) {
+          connectBtn.style.display = "";
+          connectBtn.textContent = window.ethereum
+            ? "Connect Injected Wallet"
+            : "No wallet detected";
+          connectBtn.disabled = !window.ethereum;
+          return;
+        }
+        walletListEl.innerHTML = html;
+        walletListEl.querySelectorAll(".wallet-btn[data-idx]").forEach((btn) => {
+          btn.addEventListener("click", () =>
+            connectWithProvider(discoveredWallets[Number(btn.dataset.idx)].provider, btn),
+          );
+        });
+      }
+
+      window.addEventListener("eip6963:announceProvider", (event) => {
+        const { info, provider } = event.detail;
+        if (discoveredWallets.some((w) => w.info.rdns === info.rdns)) return;
+        discoveredWallets.push({ info, provider });
+        renderWalletList();
+      });
+      window.dispatchEvent(new Event("eip6963:requestProvider"));
+      setTimeout(renderWalletList, 200);
+      connectBtn.addEventListener("click", () => {
+        if (window.ethereum) connectWithProvider(window.ethereum, connectBtn);
+      });
+
+      async function connectWithProvider(provider, btnEl) {
+        try {
+          const accounts = await provider.request({ method: "eth_requestAccounts" });
+          connectedAddress = accounts[0];
+          selectedProvider = provider;
+
+          const chain = Number(await provider.request({ method: "eth_chainId" }));
+          if (chain !== Number(txData.chainId)) {
+            throw new Error(`Wrong network (got ${chain}, need ${txData.chainId}).`);
+          }
+
+          walletListEl
+            .querySelectorAll(".wallet-btn")
+            .forEach((b) => b.classList.remove("connected"));
+          if (btnEl) btnEl.classList.add("connected");
+          connectBtn.style.display = "none";
+          updateAuthUi();
+
+          if (provider.on) {
+            provider.on("accountsChanged", handleAccountChange);
+            provider.on("chainChanged", () => window.location.reload());
+          }
+        } catch (err) {
+          setStatus(err.message, "error");
+        }
+      }
+
+      function updateAuthUi() {
+        const ok = isAuthorized(connectedAddress);
+        const role = isSafe() ? "Safe owner" : "ENS owner";
+        walletInfo.innerHTML =
+          `<p style="margin-top:0.5rem">${short(connectedAddress)} ` +
+          (ok
+            ? `<span style="color:var(--accent)">✓ ${role}</span>`
+            : `<span style="color:var(--danger)">✗ not the ${role}</span>`) +
+          `</p>`;
+        if (isSafe()) {
+          signBtn.disabled = !ok;
+          renderSignatures();
+        } else {
+          sendBtn.disabled = !ok;
+        }
+      }
+
+      function handleAccountChange(accounts) {
+        if (!accounts.length) {
+          connectedAddress = null;
+          selectedProvider = null;
+          signBtn.disabled = true;
+          sendBtn.disabled = true;
+          walletInfo.innerHTML = "";
+          setStatus("Wallet disconnected.", "info");
+          return;
+        }
+        connectedAddress = accounts[0];
+        signBtn.textContent = "Sign Transaction";
+        updateAuthUi();
+        setStatus(`Switched to ${short(connectedAddress)}`, "info");
+      }
+
+      signBtn.addEventListener("click", async () => {
+        try {
+          setStatus("Requesting signature…", "info");
+          const tx = txData.transaction;
+          const message = {
+            to: tx.to,
+            value: tx.value,
+            data: tx.data,
+            operation: tx.operation,
+            safeTxGas: tx.safeTxGas,
+            baseGas: tx.baseGas,
+            gasPrice: tx.gasPrice,
+            gasToken: tx.gasToken,
+            refundReceiver: tx.refundReceiver,
+            nonce: String(tx.nonce),
+          };
+          const payload = JSON.stringify({
+            types: SAFE_TX_TYPES,
+            primaryType: "SafeTx",
+            domain: { chainId: txData.chainId, verifyingContract: txData.account },
+            message,
+          });
+          const provider = selectedProvider || window.ethereum;
+          const signature = await provider.request({
+            method: "eth_signTypedData_v4",
+            params: [connectedAddress, payload],
+          });
+          const record = await (
+            await fetch("/signatures", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ signer: connectedAddress, signature }),
+            })
+          ).json();
+          signatures = record.signatures || [];
+          renderSignatures();
+          signBtn.disabled = true;
+          signBtn.textContent = "Signed ✓";
+          setStatus("Signature saved.", "success");
+        } catch (err) {
+          setStatus(`Signing failed: ${err.message}`, "error");
+        }
+      });
+
+      executeBtn.addEventListener("click", async () => {
+        try {
+          if (!connectedAddress) throw new Error("Connect a wallet first.");
+          setStatus("Building execTransaction…", "info");
+          const exec = await (await fetch("/exec")).json();
+          if (!exec.ready) {
+            throw new Error(`Need ${exec.need} signatures (have ${exec.have}).`);
+          }
+          setStatus("Sending transaction…", "info");
+          const provider = selectedProvider || window.ethereum;
+          const hash = await provider.request({
+            method: "eth_sendTransaction",
+            params: [{ from: connectedAddress, to: exec.to, data: exec.data, value: "0x0" }],
+          });
+          await reportExecuted(hash);
+          setStatus(`Transaction sent: ${hash}`, "success");
+          executeBtn.disabled = true;
+          executeBtn.textContent = "Executed ✓";
+        } catch (err) {
+          setStatus(`Execution failed: ${err.message}`, "error");
+        }
+      });
+
+      sendBtn.addEventListener("click", async () => {
+        try {
+          if (!connectedAddress) throw new Error("Connect a wallet first.");
+          setStatus("Sending transaction…", "info");
+          const tx = txData.transaction;
+          const provider = selectedProvider || window.ethereum;
+          const hash = await provider.request({
+            method: "eth_sendTransaction",
+            params: [{ from: connectedAddress, to: tx.to, data: tx.data, value: "0x0" }],
+          });
+          await reportExecuted(hash);
+          setStatus(`Transaction sent: ${hash}`, "success");
+          sendBtn.disabled = true;
+          sendBtn.textContent = "Sent ✓";
+        } catch (err) {
+          setStatus(`Send failed: ${err.message}`, "error");
+        }
+      });
+
+      async function reportExecuted(hash) {
+        try {
+          await fetch("/executed", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ hash }),
+          });
+        } catch {
+          /* best-effort notification to the CLI */
+        }
+      }
+
+      loadTxData();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+# Install with `prek install`; run manually with `prek run`.
+repos:
+  - repo: local
+    hooks:
+      - id: oxlint
+        name: oxlint
+        entry: pnpm exec oxlint
+        language: system
+        pass_filenames: false
+      - id: oxfmt
+        name: oxfmt (check)
+        entry: pnpm exec oxfmt --check
+        language: system
+        pass_filenames: false
+      - id: typecheck
+        name: tsc --noEmit
+        entry: pnpm run typecheck
+        language: system
+        pass_filenames: false
