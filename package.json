@@ -50,10 +50,10 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "blockstore-core": "6.1.3",
-    "ipfs-unixfs-importer": "16.1.5",
+    "blockstore-core": "7.0.1",
+    "ipfs-unixfs-importer": "17.0.1",
     "jiti": "2.7.0",
-    "multiformats": "13.4.2",
+    "multiformats": "14.0.0",
     "viem": "2.52.2"
   },
   "devDependencies": {
