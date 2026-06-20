@@ -5,3 +5,7 @@ packages:
 # Force the transitive ws dependency past the GHSA-96hv-2xvq-fx4p DoS fix.
 overrides:
   "ws@>=8.0.0 <8.21.0": ">=8.21.0"
+
+# 24h minimum age before a newly published version is installable (supply-chain guard).
+# Moved here from .npmrc, where npm warned it didn't recognize the key.
+minimumReleaseAge: 1440
