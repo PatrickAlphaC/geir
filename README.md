@@ -114,6 +114,10 @@ The GitHub release uses the [`gh` CLI](https://cli.github.com/) and its existing
 - The Safe `safeTxHash` is computed with viem **and** cross-checked against `Safe.getTransactionHash()` on-chain, so the hash you sign matches what your hardware wallet shows.
 - `release-manifest.json` embeds the commit and is pinned with the site, so any release can be rebuilt and re-verified with `geir verify`.
 
+## Publishing geir itself
+
+Maintainers: see [PUBLISHING.md](PUBLISHING.md) for the npm release steps.
+
 ## License
 
 MIT
