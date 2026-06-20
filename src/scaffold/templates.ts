@@ -18,7 +18,7 @@ export function configTemplate(opts: { pm: PackageManager; framework: Framework 
     : ["      // geir injects the build id as the env var named by buildIdEnv"];
 
   return [
-    `import { defineConfig } from "geir/config";`,
+    `import { defineConfig } from "@patrickalphac/geir/config";`,
     "",
     "export default defineConfig({",
     '  ensName: "TODO.eth",',

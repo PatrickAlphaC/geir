@@ -2,11 +2,12 @@
 
 Maintainer notes for releasing the **`geir` package itself** — not to be confused with geir's `release` command, which publishes _your site_ to IPFS/ENS.
 
-`geir` is published **unscoped and public** as `geir`. npm and GitHub are independent: publish from whichever npm account should own the name (the GitHub org is irrelevant). The first publish claims the name to that account.
+Published as **`@patrickalphac/geir`** (scoped + public). The bare name `geir` is blocked by npm's typosquatting check — too similar to `fdir`/`aegir` — so it's scoped; the `geir` **command** is unaffected (bin names aren't on the registry). npm and GitHub are independent — publish from the npm account that owns the `@patrickalphac` scope.
 
 ## What's already wired up
 
 - `files` in `package.json` whitelists the tarball to `dist/`, `README.md`, `LICENSE` — no source, tests, or examples (this file isn't published either).
+- `publishConfig.access` is `public`, so the scoped package publishes publicly without `--access=public`.
 - `prepublishOnly` runs `npm run build`, so `dist/` is always rebuilt before publish.
 - `bin: { "geir": ... }` → installers get the `geir` command.
 
@@ -25,14 +26,14 @@ npm whoami
 # 3. Preview the tarball (optional)
 npm publish --dry-run
 
-# 4. Publish (unscoped → public by default; builds first via prepublishOnly)
+# 4. Publish (public via publishConfig; builds first via prepublishOnly)
 npm publish
 
 # 5. Push the version commit + tag
 git push --follow-tags
 
 # 6. Verify
-npm view geir
+npm view @patrickalphac/geir
 ```
 
 `pnpm publish` works too (idiomatic here, since the repo is pnpm-managed); add `--no-git-checks` if it objects to the working tree.
@@ -40,7 +41,7 @@ npm view geir
 ## Notes
 
 - If your npm account has **2FA** (recommended), publish will prompt for a one-time code.
-- This is a pnpm **workspace** — `npm publish` / `pnpm publish` from the root publishes only `geir`; the `examples/demo` package is `private` and is skipped.
+- This is a pnpm **workspace** — `npm publish` / `pnpm publish` from the root publishes only `@patrickalphac/geir`; the `examples/demo` package is `private` and is skipped.
 - The package version in `package.json` is independent of any release `geir` cuts for a _consumer's_ site.
 
 ## Automating later (optional)

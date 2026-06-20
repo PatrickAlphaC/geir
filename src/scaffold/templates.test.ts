@@ -4,7 +4,7 @@ import { configTemplate, justfileBlock } from "@/scaffold/templates.js";
 describe("configTemplate", () => {
   it("uses defineConfig and the detected package manager (Next.js)", () => {
     const ts = configTemplate({ pm: "pnpm", framework: "next" });
-    expect(ts).toContain('from "geir/config"');
+    expect(ts).toContain('from "@patrickalphac/geir/config"');
     expect(ts).toContain("pnpm run build");
     expect(ts).toContain("NEXT_BUILD_ID");
     expect(ts).toContain('buildId: "commit"');

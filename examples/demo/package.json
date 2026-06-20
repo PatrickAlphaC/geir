@@ -11,6 +11,6 @@
     "geir:tx:print": "geir tx"
   },
   "devDependencies": {
-    "geir": "workspace:*"
+    "@patrickalphac/geir": "workspace:*"
   }
 }

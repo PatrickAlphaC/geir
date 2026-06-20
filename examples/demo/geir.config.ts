@@ -1,4 +1,4 @@
-import { defineConfig } from "geir/config";
+import { defineConfig } from "@patrickalphac/geir/config";
 
 export default defineConfig({
   // The tx/UI step reads this name's resolver + owner on-chain. localsafe.eth is

@@ -1,5 +1,5 @@
 {
-  "name": "geir",
+  "name": "@patrickalphac/geir",
   "version": "0.1.0",
   "description": "GitHub, ENS, IPFS, Release — release tool for static-site ENS + IPFS projects.",
   "keywords": [
@@ -37,6 +37,9 @@
       "types": "./dist/config/schema.d.ts",
       "import": "./dist/config/schema.js"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json && node scripts/copy-assets.mjs",

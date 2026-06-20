@@ -48,7 +48,7 @@ importers:
 
   examples/demo:
     devDependencies:
-      geir:
+      '@patrickalphac/geir':
         specifier: workspace:*
         version: link:../..
 

@@ -14,7 +14,7 @@ It auto-detects whether the ENS name is owned by a **Gnosis Safe** or a plain **
 ## Install
 
 ```sh
-pnpm add -D geir
+pnpm add -D @patrickalphac/geir
 geir init
 ```
 
@@ -69,7 +69,7 @@ Global flags: `--config <path>`, `--dry-run`, `--quiet`, `--no-color`, `--force`
 `geir.config.ts` (loaded with [jiti](https://github.com/unjs/jiti); `.mjs`/`.js`/`.json` also work):
 
 ```ts
-import { defineConfig } from "geir/config";
+import { defineConfig } from "@patrickalphac/geir/config";
 
 export default defineConfig({
   ensName: "localsafe.eth",
