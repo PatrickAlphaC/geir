@@ -1,2 +1,7 @@
 packages:
   - "examples/*"
+
+# Settings moved out of package.json's "pnpm" field in pnpm 10+.
+# Force the transitive ws dependency past the GHSA-96hv-2xvq-fx4p DoS fix.
+overrides:
+  "ws@>=8.0.0 <8.21.0": ">=8.21.0"
