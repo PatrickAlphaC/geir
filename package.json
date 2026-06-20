@@ -2,7 +2,23 @@
   "name": "geir",
   "version": "0.1.0",
   "description": "GitHub, ENS, IPFS, Release — release tool for static-site ENS + IPFS projects.",
+  "keywords": [
+    "contenthash",
+    "ens",
+    "ipfs",
+    "kubo",
+    "pinata",
+    "release",
+    "safe"
+  ],
+  "homepage": "https://github.com/PatrickAlphaC/geir#readme",
+  "bugs": "https://github.com/PatrickAlphaC/geir/issues",
   "license": "MIT",
+  "author": "Patrick Collins (https://github.com/PatrickAlphaC)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PatrickAlphaC/geir.git"
+  },
   "bin": {
     "geir": "dist/cli/bin.js"
   },
