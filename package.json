@@ -57,12 +57,12 @@
     "viem": "2.52.2"
   },
   "devDependencies": {
-    "@types/node": "22.19.21",
-    "oxfmt": "0.55.0",
-    "oxlint": "1.70.0",
-    "tsc-alias": "1.8.17",
-    "typescript": "5.9.3",
-    "vitest": "4.1.9"
+    "@types/node": "26.1.1",
+    "oxfmt": "0.58.0",
+    "oxlint": "1.73.0",
+    "tsc-alias": "1.9.0",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
   },
   "engines": {
     "node": ">=22"
